@@ -1,0 +1,73 @@
+topics:
+  - id: ai_automation
+    name: AI automation
+    priority: 1
+    target_sources_min: 4
+    target_sources_max: 6
+    description: Practical AI workflow automation, API integration, human-in-the-loop systems, reliability, and risks.
+    allowed_subtopics: [workflow automation, AI API integration, webhook-based automation, human-in-the-loop systems, structured data extraction, automation reliability, automation risks]
+    excluded_subtopics: [generic productivity tips, get-rich-quick AI content, spam automation, phishing, illegal scraping]
+  - id: rag_llm_chatbots
+    name: RAG, LLMs, chatbots, and AI assistants
+    priority: 1
+    target_sources_min: 5
+    target_sources_max: 7
+    description: Retrieval-augmented generation, embeddings, vector search, chatbot UX, prompt engineering, grounding, evaluation.
+    allowed_subtopics: [RAG, embeddings, vector search, chunking, hallucination reduction, source-aware answers, chatbot UX, prompt engineering, evaluation]
+    excluded_subtopics: [jailbreak tutorials, hidden prompt extraction, prompt injection exploitation, model piracy]
+  - id: psychometrics_screening
+    name: Psychometrics and digital screening
+    priority: 1
+    target_sources_min: 5
+    target_sources_max: 7
+    description: Brief instruments, PHQ-4, PSS-4, reaction tests, go/no-go, digital screening, screening versus diagnosis.
+    allowed_subtopics: [PHQ-4, PSS-4, short screening instruments, reaction time, go/no-go, EMA, digital screening, validity, screening versus diagnosis]
+    excluded_subtopics: [diagnosis, clinical interpretation of a specific person, treatment advice, punitive monitoring, covert monitoring]
+  - id: wartime_mental_health
+    name: Wartime mental health
+    priority: 1
+    target_sources_min: 5
+    target_sources_max: 7
+    description: PTSD, anxiety, depression, chronic stress, moral injury, burnout, resilience, war-affected populations.
+    allowed_subtopics: [PTSD, anxiety, depression, chronic stress, moral injury, burnout, resilience, veterans, civilians during war, early detection]
+    excluded_subtopics: [diagnosing the user, crisis counseling as a service, treatment plans, medication advice, propaganda]
+  - id: military_medicine
+    name: Military medicine and field constraints
+    priority: 1
+    target_sources_min: 4
+    target_sources_max: 6
+    description: Military medicine constraints, field usability, austere environments, cognitive load, medevac as high-level workflow.
+    allowed_subtopics: [austere environments, combat medic cognitive load, medevac high-level workflow, field usability, reliability under stress, offline design, human factors]
+    excluded_subtopics: [tactical planning, operational advice, targeting, evasion, weapons, classified procedures, unit-specific details]
+  - id: neuromodulation
+    name: Neuromodulation and device-based interventions
+    priority: 1
+    target_sources_min: 6
+    target_sources_max: 8
+    description: rTMS/TMS, tDCS/tACS, neurofeedback, VNS, wearables, sleep/circadian interventions, evidence and safety.
+    allowed_subtopics: [rTMS, TMS, tDCS, tACS, neurofeedback, VNS, sleep, circadian interventions, wearables, evidence limitations, safety]
+    excluded_subtopics: [DIY protocols, electrode placement, current or duration instructions, self-treatment protocols, guaranteed cure claims]
+  - id: cognitive_performance_learning
+    name: Cognitive performance, learning, and neurofitness
+    priority: 2
+    target_sources_min: 4
+    target_sources_max: 6
+    description: Attention, executive function, cognitive load, adaptive learning, stress/sleep/performance, training design.
+    allowed_subtopics: [attention, executive function, cognitive load, adaptive learning, stress and performance, sleep and cognition, training design, learning under pressure]
+    excluded_subtopics: [pseudoscientific brain hacks, guaranteed IQ improvement, supplement recommendations, medication advice]
+  - id: human_ai_interaction
+    name: Human-AI interaction and personal AI systems
+    priority: 2
+    target_sources_min: 4
+    target_sources_max: 6
+    description: Trust calibration, personalization, user modeling, adaptive interfaces, voice-first accessibility, AI assistants.
+    allowed_subtopics: [human-AI interaction, trust calibration, explainability, adaptive interfaces, personalization, user modeling, voice-first accessibility, AI assistants]
+    excluded_subtopics: [claims of sentient AI, manipulative companions, dark patterns, covert persuasion]
+  - id: volodymyr_projects_context
+    name: Public project context
+    priority: 3
+    target_sources_min: 3
+    target_sources_max: 5
+    description: Sanitized public context about Vulcan’s Mind, Люстерко, Іменуй мене, public work and project interests.
+    allowed_subtopics: [Vulcan’s Mind, Люстерко, Іменуй мене, public professional interests, public project descriptions]
+    excluded_subtopics: [private data, sensitive military details, private health information, unverified claims, exaggerated maturity claims]
