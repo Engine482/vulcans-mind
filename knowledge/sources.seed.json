@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "id": "vulcans_mind_project_note",
+    "title": "Vulcan's Mind — public project note",
+    "authors": "Volodymyr Motornyi",
+    "year": 2026,
+    "topic": "volodymyr_projects_context",
+    "sourceType": "project_note",
+    "language": "en",
+    "status": "approved",
+    "relevanceScore": 0.95,
+    "qualityNotes": "Author-owned factual project note derived from public docs.",
+    "copyrightStatus": "owned_by_author"
+  }
+]
