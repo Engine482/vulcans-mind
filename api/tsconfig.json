@@ -15,9 +15,8 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": false,
     "types": ["node"],
-    "outDir": "dist",
-    "rootDir": "src"
+    "outDir": "dist"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "scripts/**/*"],
   "exclude": ["node_modules", "dist"]
 }
