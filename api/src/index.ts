@@ -4,6 +4,7 @@ import { buildServer, type BuildServerOptions } from "./server.js";
 import { getPool, closePool } from "./db/pool.js";
 import { OpenAIEmbedder } from "./rag/embed.js";
 import { PgVectorRetriever } from "./rag/retrieve.js";
+import { OpenAIGenerator } from "./chat/generate.js";
 import { PgMetricsWriter } from "./chat/metrics.js";
 
 function looksLikeRealOpenAiKey(key: string | undefined): boolean {
@@ -19,6 +20,7 @@ function buildChatDeps(config: AppConfig): BuildServerOptions["chat"] {
   const embedder = new OpenAIEmbedder(config);
   return {
     retriever: new PgVectorRetriever(pool, embedder, config),
+    generator: new OpenAIGenerator(config),
     metricsWriter: new PgMetricsWriter(pool),
   };
 }

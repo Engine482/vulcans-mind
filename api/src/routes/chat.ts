@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import type { AppConfig } from "../config.js";
 import { ChatService } from "../chat/service.js";
+import type { Generator } from "../chat/generate.js";
 import type { MetricsWriter } from "../chat/metrics.js";
 import type { Retriever } from "../rag/retrieve.js";
 
@@ -18,6 +19,7 @@ const ChatBodySchema = z.object({
 export type ChatRouteDeps = {
   config: AppConfig;
   retriever?: Retriever;
+  generator?: Generator;
   metricsWriter?: MetricsWriter;
 };
 
@@ -28,6 +30,7 @@ export async function registerChatRoute(
   const service = new ChatService({
     config: deps.config,
     retriever: deps.retriever,
+    generator: deps.generator,
   });
 
   app.post("/api/chat", {

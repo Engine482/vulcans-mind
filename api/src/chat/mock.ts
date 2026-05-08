@@ -1,8 +1,8 @@
 import type { ChatSourceCard, ResponseLanguage } from "./types.js";
 
 const NOTICE: Record<ResponseLanguage, string> = {
-  uk: "[MOCK] Цей бекенд поки відповідає у тестовому режимі без виклику реальної моделі. Реальна генерація з’явиться в Sprint 8.",
-  en: "[MOCK] This backend is currently in test mode without real model calls. Real generation arrives in Sprint 8.",
+  uk: "[MOCK] Цей бекенд відповідає у тестовому режимі без виклику моделі (немає DATABASE_URL або OPENAI_API_KEY).",
+  en: "[MOCK] This backend is responding in test mode without real model calls (DATABASE_URL or OPENAI_API_KEY is missing).",
 };
 
 const WITH_SOURCES: Record<ResponseLanguage, (n: number) => string> = {

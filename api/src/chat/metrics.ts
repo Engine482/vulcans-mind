@@ -30,14 +30,17 @@ export class PgMetricsWriter implements MetricsWriter {
     const retrievedSourceIds = record.outcome?.retrievedSourceIds ?? [];
     const model = record.outcome?.response.meta.model ?? null;
     const fallbackUsed = record.outcome?.response.meta.fallbackUsed ?? false;
+    const inputTokens = record.outcome?.inputTokens ?? null;
+    const outputTokens = record.outcome?.outputTokens ?? null;
 
     await this.pool.query(
       `INSERT INTO request_metrics
          (request_id, session_id_hash, topic, response_language, model_used,
           fallback_used, retrieval_count, retrieved_source_ids,
-          input_length_chars, output_length_chars, latency_ms,
+          input_length_chars, output_length_chars,
+          input_tokens, output_tokens, latency_ms,
           status, error_code)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10,$11,$12,$13)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10,$11,$12,$13,$14,$15)
        ON CONFLICT (request_id) DO NOTHING`,
       [
         record.requestId,
@@ -50,6 +53,8 @@ export class PgMetricsWriter implements MetricsWriter {
         JSON.stringify(retrievedSourceIds),
         record.inputLengthChars,
         record.outputLengthChars,
+        inputTokens,
+        outputTokens,
         record.latencyMs,
         record.status,
         record.errorCode ?? null,

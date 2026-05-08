@@ -5,6 +5,7 @@ import type {
   RetrievalResult,
   SourceMeta,
 } from "../rag/retrieve.js";
+import type { GenerateInput, Generator } from "./generate.js";
 import { loadConfig } from "../config.js";
 
 const cfg = loadConfig({
@@ -130,3 +131,143 @@ function emptyResult(): RetrievalResult {
     inputTokens: 0,
   };
 }
+
+describe("ChatService — generator path", () => {
+  const retrievalWithChunk: RetrievalResult = {
+    chunks: [
+      {
+        chunkId: "c1",
+        sourceId: sourceA.sourceId,
+        sourceExternalId: sourceA.externalId,
+        sourceDocumentId: "doc1",
+        chunkIndex: 0,
+        content: "RAG grounds LLM output in retrieved passages.",
+        similarity: 0.9,
+      },
+    ],
+    sources: [sourceA],
+    candidateCount: 1,
+    topSimilarity: 0.9,
+    embeddingModel: "text-embedding-3-small",
+    inputTokens: 5,
+  };
+
+  it("invokes generator with built prompt and returns model output verbatim (trimmed)", async () => {
+    const calls: GenerateInput[] = [];
+    const generator: Generator = {
+      async generate(input) {
+        calls.push(input);
+        return {
+          text: "  RAG retrieves and grounds answers.  ",
+          model: input.model,
+          inputTokens: 50,
+          outputTokens: 15,
+          finishReason: "stop",
+        };
+      },
+    };
+    const svc = new ChatService({
+      config: cfg,
+      retriever: makeRetriever(retrievalWithChunk),
+      generator,
+    });
+    const out = await svc.handle({
+      message: "What is RAG?",
+      requestId: "req_g1",
+    });
+
+    expect(calls).toHaveLength(1);
+    expect(calls[0]!.systemPrompt).toContain("Vulcan's Mind");
+    expect(calls[0]!.userContent).toContain("RAG Foundations");
+    expect(calls[0]!.userContent).toContain("What is RAG?");
+    expect(out.refusalIssued).toBe(false);
+    expect(out.response.answer).toBe("RAG retrieves and grounds answers.");
+    expect(out.response.meta.model).toBe(cfg.openai.mainModel);
+    expect(out.response.meta.fallbackUsed).toBe(false);
+    expect(out.response.sources).toHaveLength(1);
+    expect(out.inputTokens).toBe(50);
+    expect(out.outputTokens).toBe(15);
+  });
+
+  it("marks fallbackUsed=true when main fails and fallback succeeds", async () => {
+    const generator: Generator = {
+      async generate(input) {
+        if (input.model === cfg.openai.mainModel) throw new Error("rate limited");
+        return {
+          text: "fallback grounded answer",
+          model: input.model,
+          inputTokens: 30,
+          outputTokens: 10,
+          finishReason: "stop",
+        };
+      },
+    };
+    const svc = new ChatService({
+      config: cfg,
+      retriever: makeRetriever(retrievalWithChunk),
+      generator,
+    });
+    const out = await svc.handle({
+      message: "What is RAG?",
+      requestId: "req_g2",
+    });
+    expect(out.response.meta.fallbackUsed).toBe(true);
+    expect(out.response.meta.model).toBe(cfg.openai.fallbackModel);
+  });
+
+  it("does not call generator on refusals", async () => {
+    let called = false;
+    const generator: Generator = {
+      async generate() {
+        called = true;
+        return {
+          text: "should not reach",
+          model: "x",
+          inputTokens: 0,
+          outputTokens: 0,
+          finishReason: "stop",
+        };
+      },
+    };
+    const svc = new ChatService({
+      config: cfg,
+      retriever: makeRetriever(retrievalWithChunk),
+      generator,
+    });
+    const out = await svc.handle({
+      message: "Do I have PTSD?",
+      requestId: "req_g3",
+    });
+    expect(called).toBe(false);
+    expect(out.refusalIssued).toBe(true);
+  });
+
+  it("returns weak-retrieval message without calling generator when 0 chunks", async () => {
+    let called = false;
+    const generator: Generator = {
+      async generate() {
+        called = true;
+        return {
+          text: "should not reach",
+          model: "x",
+          inputTokens: 0,
+          outputTokens: 0,
+          finishReason: "stop",
+        };
+      },
+    };
+    const svc = new ChatService({
+      config: cfg,
+      retriever: makeRetriever(emptyResult()),
+      generator,
+    });
+    const out = await svc.handle({
+      message: "What is RAG?",
+      requestId: "req_g4",
+    });
+    expect(called).toBe(false);
+    expect(out.response.sources).toEqual([]);
+    expect(out.response.answer.toLowerCase()).toContain("does not have relevant sources");
+    expect(out.response.meta.fallbackUsed).toBe(false);
+  });
+});
