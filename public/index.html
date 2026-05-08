@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Vulcan's Mind — local widget demo</title>
+    <link rel="icon" href="assets/vulcans-mind-icon.svg" />
+    <link rel="stylesheet" href="chat-widget.css" />
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: #fbf6ef;
+        color: #1f1b16;
+      }
+      main {
+        max-width: 720px;
+        margin: 64px auto;
+        padding: 0 24px;
+        line-height: 1.5;
+      }
+      h1 { font-size: 28px; margin-bottom: 8px; }
+      p.muted { color: #6b6357; }
+      code {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        background: #efe7d4;
+        padding: 1px 5px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Vulcan's Mind</h1>
+      <p class="muted">
+        Локальна сторінка для тестування плаваючого віджета чату. Натисніть
+        кнопку у правому нижньому куті, щоб відкрити панель.
+      </p>
+      <p>
+        Віджет очікує, що API доступне за адресою з
+        <code>window.VULCANS_MIND_CONFIG.apiBaseUrl</code>. За замовчуванням
+        вона налаштована на <code>http://localhost:3987</code> — той самий
+        порт, на якому стартує локальний бекенд (див.
+        <code>api/src/index.ts</code>).
+      </p>
+      <p class="muted">
+        Без реального <code>OPENAI_API_KEY</code> та <code>DATABASE_URL</code>
+        бекенд відповідає у mock-режимі — це нормально для перевірки UX.
+      </p>
+    </main>
+    <script>
+      window.VULCANS_MIND_CONFIG = {
+        apiBaseUrl: "http://localhost:3987",
+        language: "uk",
+        iconUrl: "assets/vulcans-mind-icon.svg",
+      };
+    </script>
+    <script src="chat-widget.js" defer></script>
+  </body>
+</html>

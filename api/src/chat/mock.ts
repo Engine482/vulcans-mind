@@ -1,8 +1,8 @@
 import type { ChatSourceCard, ResponseLanguage } from "./types.js";
 
 const NOTICE: Record<ResponseLanguage, string> = {
-  uk: "[MOCK] Цей бекенд відповідає у тестовому режимі без виклику моделі (немає DATABASE_URL або OPENAI_API_KEY).",
-  en: "[MOCK] This backend is responding in test mode without real model calls (DATABASE_URL or OPENAI_API_KEY is missing).",
+  uk: "[MOCK] Цей бекенд відповідає у тестовому режимі без виклику моделі (база знань або OpenAI зараз недоступні).",
+  en: "[MOCK] This backend is responding in test mode without real model calls (knowledge base or OpenAI not available right now).",
 };
 
 const WITH_SOURCES: Record<ResponseLanguage, (n: number) => string> = {
@@ -18,8 +18,8 @@ const NO_SOURCES: Record<ResponseLanguage, string> = {
 };
 
 const RETRIEVAL_DISABLED: Record<ResponseLanguage, string> = {
-  uk: "Пошук у базі знань тимчасово недоступний (немає DATABASE_URL або OPENAI_API_KEY). Це очікувано на цьому етапі розробки.",
-  en: "Knowledge base retrieval is temporarily disabled (DATABASE_URL or OPENAI_API_KEY missing). This is expected at the current dev stage.",
+  uk: "Пошук у базі знань тимчасово недоступний. Це очікувана поведінка, коли база або генератор не сконфігуровані локально.",
+  en: "Knowledge base retrieval is temporarily disabled. This is expected when the database or generator is not configured locally.",
 };
 
 export type MockAnswerInput = {
