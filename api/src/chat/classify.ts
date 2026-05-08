@@ -46,11 +46,16 @@ function matchesUnsafeMedical(text: string): boolean {
     /\bdiagnose me\b/,
     /\bself[- ]?diagnos/,
     /\b(dose|dosage|mg per|prescrib|medication change|stop taking|taper)\b/,
+    /\bshould i stop\b/,
     /\bdiy\s+(tdcs|rtms|tms)\b/,
-    /\b(tdcs|rtms)\s+(protocol|montage|current|setup|how to)/,
+    /\b(tdcs|rtms|tms)\s+(protocol|montage|current|setup|how to)/,
     /чи (в мене|у мене)\s+(птср|депрес|тривож|діагноз)/,
+    /у\s+мене\s+(симптом|ознак).*?(\.|\?).*\bце\b/,
+    /(це|чи це)\s+(птср|депрес|тривожн|панічн)/,
     /постав(ь|ити)?\s+(мені\s+)?діагноз/,
     /самостійн[аеоиі]+\s+(нейростимуляц|тдкс|tdcs)/,
+    /\b(tdcs|rtms|tms)\s+протокол/,
+    /протокол\s+(tdcs|rtms|tms)/,
     /яку\s+дозу/,
     /(збільшити|зменшити|відмінити)\s+(дозу|препарат|таблет)/,
   ]);
@@ -59,14 +64,16 @@ function matchesUnsafeMedical(text: string): boolean {
 function matchesUnsafeMilitary(text: string): boolean {
   return matchesAny(text, [
     /\b(targeting|target acquisition|fire mission|kill chain)\b/,
-    /\b(evasion|exfil|exfiltrat)\b/,
+    /\b(evasion|evade|exfil|exfiltrat)\b/,
     /\btactical (plan|operation|movement|medevac under fire)\b/,
-    /\bdrone (strike|attack|targeting)\b/,
+    /\bdrone (strike|attack|targeting|optim)\b/,
+    /\boptimi[sz]e\s+a?\s*(drone\s+strike|weapon|fire|targeting)/,
     /таргет(инг|увати)/,
     /тактичн(ий|ого|у)\s+(план|маневр|удар|медевак)/,
     /(евакуац|медевак)\s+(під\s+(вогн|обстріл))/,
     /(удар|атак)\s+(дрон|fpv)/,
     /оптимізаці[яї]\s+(зброї|ураження)/,
+    /(обійти|обходити|оминути)\s+(спостережен|розвідк|дозор|противник)/,
   ]);
 }
 
@@ -127,8 +134,8 @@ const TOPIC_PATTERNS: Array<{ topic: ChatTopic; patterns: RegExp[] }> = [
   {
     topic: "cognitive_performance_learning",
     patterns: [
-      /\b(cognitive performance|attention|working memory|learning|spaced repetition)\b/,
-      /(когнітивн|увага|пам'ять|навчанн|інтервальн)/,
+      /\b(cognitive (performance|load)|attention|working memory|learning|spaced repetition|executive function)\b/,
+      /(когнітивн|когнітивн[еого]+\s+навантаж|увага|пам'ять|навчанн|інтервальн)/,
     ],
   },
   {
