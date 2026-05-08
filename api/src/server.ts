@@ -1,10 +1,19 @@
 import Fastify, { type FastifyError, type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
+import rateLimit from "@fastify/rate-limit";
 import { type AppConfig } from "./config.js";
 import { registerHealthRoute } from "./routes/health.js";
+import { registerChatRoute, type ChatRouteDeps } from "./routes/chat.js";
 import { newRequestId } from "./lib/request-id.js";
 
-export async function buildServer(config: AppConfig): Promise<FastifyInstance> {
+export type BuildServerOptions = {
+  chat?: Omit<ChatRouteDeps, "config">;
+};
+
+export async function buildServer(
+  config: AppConfig,
+  options: BuildServerOptions = {},
+): Promise<FastifyInstance> {
   const app = Fastify({
     logger: {
       level: config.logLevel,
@@ -34,6 +43,18 @@ export async function buildServer(config: AppConfig): Promise<FastifyInstance> {
     credentials: false,
   });
 
+  if (config.nodeEnv !== "test") {
+    await app.register(rateLimit, {
+      global: false,
+      max: config.rateLimit.max,
+      timeWindow: config.rateLimit.windowSeconds * 1000,
+      errorResponseBuilder: () => ({
+        error: "rate_limited",
+        message: "Too many requests. Please try again shortly.",
+      }),
+    });
+  }
+
   app.setErrorHandler((error: FastifyError, req, reply) => {
     req.log.error({ err: { message: error.message, name: error.name } }, "request_error");
     const status = error.statusCode && error.statusCode >= 400 ? error.statusCode : 500;
@@ -50,6 +71,7 @@ export async function buildServer(config: AppConfig): Promise<FastifyInstance> {
   });
 
   await registerHealthRoute(app, config);
+  await registerChatRoute(app, { config, ...(options.chat ?? {}) });
 
   return app;
 }

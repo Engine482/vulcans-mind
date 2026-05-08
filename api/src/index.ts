@@ -1,10 +1,42 @@
 import "dotenv/config";
-import { loadConfig } from "./config.js";
-import { buildServer } from "./server.js";
+import { loadConfig, type AppConfig } from "./config.js";
+import { buildServer, type BuildServerOptions } from "./server.js";
+import { getPool, closePool } from "./db/pool.js";
+import { OpenAIEmbedder } from "./rag/embed.js";
+import { PgVectorRetriever } from "./rag/retrieve.js";
+import { PgMetricsWriter } from "./chat/metrics.js";
+
+function looksLikeRealOpenAiKey(key: string | undefined): boolean {
+  return typeof key === "string" && key.startsWith("sk-") && key.length >= 20;
+}
+
+function buildChatDeps(config: AppConfig): BuildServerOptions["chat"] {
+  const hasDb = Boolean(config.databaseUrl);
+  const hasOpenAi = looksLikeRealOpenAiKey(config.openai.apiKey);
+  if (!hasDb || !hasOpenAi) return {};
+
+  const pool = getPool(config);
+  const embedder = new OpenAIEmbedder(config);
+  return {
+    retriever: new PgVectorRetriever(pool, embedder, config),
+    metricsWriter: new PgMetricsWriter(pool),
+  };
+}
 
 async function main(): Promise<void> {
   const config = loadConfig();
-  const app = await buildServer(config);
+  const chat = buildChatDeps(config);
+  const app = await buildServer(config, { chat });
+
+  if (Object.keys(chat ?? {}).length === 0) {
+    app.log.warn(
+      {
+        has_database_url: Boolean(config.databaseUrl),
+        has_openai_key: Boolean(config.openai.apiKey),
+      },
+      "chat_running_in_mock_only_mode",
+    );
+  }
 
   try {
     await app.listen({ port: config.port, host: config.host });
@@ -21,6 +53,7 @@ async function main(): Promise<void> {
     process.on(sig, async () => {
       app.log.info({ sig }, "shutdown_signal");
       await app.close();
+      await closePool();
       process.exit(0);
     });
   }
