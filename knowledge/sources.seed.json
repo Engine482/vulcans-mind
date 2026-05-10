@@ -1,5 +1,18 @@
 [
   {
+    "id": "vulcan_profile_and_projects",
+    "title": "Володимир «Вулкан» Моторний — публічний контекст і проєкти",
+    "authors": "Volodymyr Motornyi",
+    "year": 2026,
+    "topic": "volodymyr_projects_context",
+    "sourceType": "project_note",
+    "language": "uk",
+    "status": "approved",
+    "relevanceScore": 1.0,
+    "qualityNotes": "Canonical author-owned profile and projects note. Primary source for questions about Volodymyr and his public projects.",
+    "copyrightStatus": "owned_by_author"
+  },
+  {
     "id": "vulcans_mind_project_note",
     "title": "Vulcan's Mind — public project note",
     "authors": "Volodymyr Motornyi",
@@ -36,6 +49,45 @@
     "status": "approved",
     "relevanceScore": 0.7,
     "qualityNotes": "Author-owned factual project note. Public-facing only; no claims beyond what is publicly described.",
+    "copyrightStatus": "owned_by_author"
+  },
+  {
+    "id": "ai_rag_design_note",
+    "title": "AI/RAG design note — практичні рамки Vulcan's Mind",
+    "authors": "Volodymyr Motornyi",
+    "year": 2026,
+    "topic": "rag_llm_chatbots",
+    "sourceType": "project_note",
+    "language": "uk",
+    "status": "approved",
+    "relevanceScore": 0.85,
+    "qualityNotes": "Author-owned design note. Explains why RAG, what design choices matter, what RAG does not solve.",
+    "copyrightStatus": "owned_by_author"
+  },
+  {
+    "id": "military_context_digital_tools_note",
+    "title": "Military context and digital tools — design note",
+    "authors": "Volodymyr Motornyi",
+    "year": 2026,
+    "topic": "military_medicine",
+    "sourceType": "project_note",
+    "language": "uk",
+    "status": "approved",
+    "relevanceScore": 0.85,
+    "qualityNotes": "Author-owned design note. Human-factors and product-design implications only; no tactical or operational content.",
+    "copyrightStatus": "owned_by_author"
+  },
+  {
+    "id": "mental_health_boundaries_note",
+    "title": "Mental health boundaries — design note для AI-інструментів",
+    "authors": "Volodymyr Motornyi",
+    "year": 2026,
+    "topic": "wartime_mental_health",
+    "sourceType": "project_note",
+    "language": "uk",
+    "status": "approved",
+    "relevanceScore": 0.85,
+    "qualityNotes": "Author-owned design note. Defines what an AI tool in mental-health context can and cannot do.",
     "copyrightStatus": "owned_by_author"
   },
 

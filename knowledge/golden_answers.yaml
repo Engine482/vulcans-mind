@@ -1,0 +1,117 @@
+# Golden answers — Vulcan's Mind
+#
+# This is a *behavior reference* file, not an ingestable source.
+# Use it for:
+#   - manual evaluation of how the bot answers core questions;
+#   - regression checks when prompt or RAG layer changes;
+#   - alignment between the canonical knowledge note and assistant tone.
+#
+# It is intentionally NOT registered in sources.seed.json: the model must derive
+# answers from the canonical notes via retrieval, not from a Q&A cheatsheet.
+
+- id: vm_what_is
+  question: "Що таке Vulcan's Mind?"
+  expected_topic: volodymyr_projects_context
+  answer: |
+    Vulcan's Mind — це AI-бот на сайті motornyi.com, побудований як невеликий
+    RAG-чат над curated базою публічних нотаток і дослідницьких summaries
+    Володимира «Вулкана» Моторного. Його роль — пояснювати ідеї проєктів
+    («Люстерко», Vulcan's Mind, у публічному framing — «Іменуй мене»),
+    а також теми, близькі автору: AI-автоматизацію, RAG/LLM, психометрику,
+    скринінг, ментальне здоров'я у воєнному контексті, нейромодуляцію як
+    рівень доказів, cognitive performance і human–AI взаємодію. Це не медичний
+    сервіс і не military decision-support система.
+  must_contain:
+    - RAG
+    - motornyi.com
+    - публічн
+  must_not_contain:
+    - діагноз
+    - лікування
+
+- id: vm_projects_list
+  question: "Над якими проєктами працює Вулкан?"
+  expected_topic: volodymyr_projects_context
+  answer: |
+    З публічного контексту головні проєкти — «Люстерко» та Vulcan's Mind.
+    «Люстерко» — невеликий MVP цифрового self-screening, який допомагає людині
+    помічати зміни у власному стані; це не клінічний інструмент і не діагностика.
+    Vulcan's Mind — цей самий бот, як демонстрація source-aware RAG над публічним
+    контекстом. У публічному framing згадується «Іменуй мене» — дослідницька
+    рамка про мову, ідентичність і human–AI взаємодію; це не готовий продукт.
+  must_contain:
+    - Люстерк
+    - Vulcan
+  must_not_contain:
+    - поза підтримуваними темами
+    - out of scope
+
+- id: vm_lusterko
+  question: "Що таке «Люстерко» і яку проблему воно вирішує?"
+  expected_topic: volodymyr_projects_context
+  answer: |
+    «Люстерко» — невеликий self-funded MVP про те, як легке цифрове self-screening
+    може допомогти службовцям і цивільним помічати зміни у власному стані під час
+    війни. Назва — «маленьке дзеркало», тобто рамка відображення, а не оцінки.
+    Це не клінічна decision-support система, не терапія і не діагностичний
+    інструмент. Проєкт чесно розрізняє screening і diagnosis, тримає мову калмною
+    й неалармістською, працює українською й англійською.
+  must_contain:
+    - screening
+    - не діагност
+
+- id: vm_lusterko_vs_medical
+  question: "Чим «Люстерко» відрізняється від медичного сервісу?"
+  expected_topic: volodymyr_projects_context
+  answer: |
+    «Люстерко» не ставить діагнози, не призначає лікування і не претендує на
+    клінічну валідацію. Це self-reflection-інструмент: він допомагає користувачу
+    помічати власні зміни через короткі валідовані self-report instruments,
+    призначені для повторного використання. Будь-яке масштабування за межі MVP
+    потребувало б зовнішнього review, і він не проводився.
+
+- id: vm_rag_definition
+  question: "Що таке RAG і чому він важливий для AI-ботів?"
+  expected_topic: rag_llm_chatbots
+  answer: |
+    RAG (retrieval-augmented generation) — це патерн, у якому LLM перед
+    відповіддю отримує релевантні фрагменти з curated бази (через embedding +
+    vector search), і генерує відповідь, спираючись на цей контекст. Це різко
+    знижує hallucinations у вузьких темах, дозволяє пояснити, звідки прийшла
+    відповідь, і оновлюється простим re-ingest без fine-tuning. Для small-domain
+    бота на персональному сайті це раціональне рішення.
+
+- id: vm_mental_health_ai
+  question: "Як AI можна використати в охороні ментального здоров'я?"
+  expected_topic: wartime_mental_health
+  answer: |
+    AI може допомагати з трьома речами: 1) screening — короткі валідовані
+    self-report instruments як спосіб помічати зміни (не діагностувати);
+    2) education — пояснення evidence-informed принципів зрозумілою мовою;
+    3) clinician support — допомога фахівцям зі структурою, документуванням,
+    тригерами для уваги. Чого AI не має робити: ставити діагнози, призначати
+    лікування, замінювати клініциста, або працювати як терапевт. Хороший дизайн —
+    це той, що не претендує на більше, ніж він є.
+
+- id: vm_military_context
+  question: "Як військовий контекст змінює дизайн цифрових інструментів?"
+  expected_topic: military_medicine
+  answer: |
+    Військовий контекст накладає реальні обмеження: обмежений канал звʼязку,
+    cognitive load, фізична втома, стрес, перерви, потенційно ушкоджений
+    пристрій, висока ціна помилки. Дизайн має враховувати це через offline-first,
+    низький cognitive load на критичному шляху, чесні стани, reversibility і
+    privacy за замовчуванням. Це не «військовий» дизайн — це робастний дизайн.
+    Vulcan's Mind обговорює це лише на рівні human-factors і product design,
+    без тактичних чи операційних деталей.
+
+- id: vm_imenuy_mene
+  question: "Що таке «Іменуй мене»?"
+  expected_topic: volodymyr_projects_context
+  answer: |
+    «Іменуй мене» — невелика дослідницька рамка в портфоліо Володимира, поряд
+    із Vulcan's Mind і «Люстерком». У публічному framing вона про мову,
+    ідентичність і те, як люди описують свій внутрішній досвід. Концептуально
+    пов'язана з інтересами Володимира в human–AI взаємодії й обережному дизайні
+    conversational інтерфейсів. Це не готовий продукт, не публічний реліз,
+    немає user base і немає клінічних claims.
