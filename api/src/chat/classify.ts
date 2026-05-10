@@ -108,8 +108,10 @@ const TOPIC_PATTERNS: Array<{ topic: ChatTopic; patterns: RegExp[] }> = [
   {
     topic: "wartime_mental_health",
     patterns: [
-      /\b(ptsd|combat stress|wartime|mental health.*war)\b/,
+      /\b(ptsd|combat stress|wartime|mental health|mental[- ]?wellbeing)\b/,
       /(птср|психічн[еого]+\s+здоров|війн|бойов(ий|а)\s+стрес)/,
+      /менталь(не|ного|ним|ним|ні|ному)?(\s+здоров)?/,
+      /охорон[аиу]\s+ментальн/,
     ],
   },
   {

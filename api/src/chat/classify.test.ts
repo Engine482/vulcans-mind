@@ -110,6 +110,18 @@ describe("classify — supported topics", () => {
     ).toBe("wartime_mental_health");
   });
 
+  it("matches mental health without an explicit war anchor (post-S13 gap)", () => {
+    expect(
+      classify("Які межі AI-інструментів у ментальному здоров'ї?").topic,
+    ).toBe("wartime_mental_health");
+    expect(
+      classify("Як AI можна використати в охороні ментального здоров'я?").topic,
+    ).toBe("wartime_mental_health");
+    expect(classify("What are AI tool limits in mental health?").topic).toBe(
+      "wartime_mental_health",
+    );
+  });
+
   it("matches neuromodulation as a topic (when not asking for DIY)", () => {
     expect(classify("What does the evidence say about rTMS for depression?").topic)
       .toBe("neuromodulation");
