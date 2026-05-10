@@ -89,6 +89,21 @@ describe("classify — supported topics", () => {
     );
   });
 
+  it("matches Cyrillic 'Вулкан' nickname and project questions (task-pack fix)", () => {
+    expect(classify("Над якими проєктами працює Вулкан?").topic).toBe(
+      "volodymyr_projects_context",
+    );
+    expect(classify("Що робить Вулкан?").topic).toBe(
+      "volodymyr_projects_context",
+    );
+    expect(classify("Які проєкти у Володимира?").topic).toBe(
+      "volodymyr_projects_context",
+    );
+    expect(classify("Розкажи про Моторного").topic).toBe(
+      "volodymyr_projects_context",
+    );
+  });
+
   it("matches wartime mental health", () => {
     expect(
       classify("How does combat stress affect screening tools?").topic,

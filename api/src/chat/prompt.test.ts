@@ -33,8 +33,8 @@ describe("buildPrompt — system core", () => {
       sources: [sourceA],
     });
     expect(out.systemPrompt).toContain("Vulcan's Mind");
-    expect(out.systemPrompt).toContain("Жорсткі правила");
-    expect(out.systemPrompt).toContain("Не вигадуй");
+    expect(out.systemPrompt).toContain("Фактичність");
+    expect(out.systemPrompt).toContain("не вигадуй");
   });
 
   it("uses English system core for en language", () => {
@@ -44,9 +44,9 @@ describe("buildPrompt — system core", () => {
       chunks: [chunkA],
       sources: [sourceA],
     });
-    expect(out.systemPrompt).toContain("Hard rules");
-    expect(out.systemPrompt).toContain("Do not invent or guess");
-    expect(out.systemPrompt).toContain("source cards");
+    expect(out.systemPrompt).toContain("Factuality");
+    expect(out.systemPrompt).toContain("do not invent");
+    expect(out.systemPrompt).toContain("source attribution");
   });
 
   it("never instructs the model to emit citations or source lists", () => {
@@ -56,7 +56,8 @@ describe("buildPrompt — system core", () => {
       chunks: [chunkA],
       sources: [sourceA],
     });
-    expect(out.systemPrompt).toContain("No markdown headings, no source list");
+    expect(out.systemPrompt).toContain("do not output a separate sources block");
+    expect(out.systemPrompt).toContain("[1]");
   });
 });
 
@@ -101,7 +102,7 @@ describe("buildPrompt — context block", () => {
     });
     expect(en.userContent).toContain("(empty)");
     expect(en.userContent).toContain("Retrieved context is empty");
-    expect(en.userContent).toContain("Do not improvise an answer");
+    expect(en.userContent).toContain("Do not improvise factual claims");
 
     const uk = buildPrompt({
       language: "uk",

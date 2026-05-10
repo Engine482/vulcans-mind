@@ -1,18 +1,18 @@
 import type { ChatTopic, ResponseLanguage } from "./types.js";
 
 const MEDICAL_REFUSAL: Record<ResponseLanguage, string> = {
-  uk: "Я не можу ставити діагноз або підбирати лікування. Можу пояснити загально, як працює скринінг, які є обмеження таких інструментів і чому для рішення потрібна оцінка фахівця.",
-  en: "I can't provide a diagnosis or pick treatment. I can explain at a general level how screening works, what its limits are, and why a clinician's assessment is required for any decision.",
+  uk: "Я не можу оцінювати індивідуальний стан, ставити діагноз або радити лікування. Але можу пояснити загальні принципи цифрового скринінгу, психометрики, ментального здоров'я або те, як AI може допомагати фахівцям без заміни професійної допомоги.",
+  en: "I can't assess an individual state, give a diagnosis, or recommend treatment. I can explain general principles of digital screening, psychometrics, mental health, or how AI can support clinicians without replacing professional care.",
 };
 
 const MILITARY_REFUSAL: Record<ResponseLanguage, string> = {
-  uk: "Я не можу допомагати з тактичними або операційними військовими рішеннями. Можу обговорити це на безпечному рівні: як польові умови, стрес, обмежений зв’язок і cognitive load впливають на дизайн медичних або цифрових інструментів.",
+  uk: "Я не можу допомагати з тактичними або операційними військовими рішеннями. Можу обговорити це безпечно: як польові умови, стрес, обмежений зв'язок і cognitive load впливають на дизайн медичних або цифрових інструментів.",
   en: "I can't help with tactical or operational military decisions. I can discuss this at a safe level: how field conditions, stress, limited communications, and cognitive load shape the design of medical or digital tools.",
 };
 
 const OUT_OF_SCOPE: Record<ResponseLanguage, string> = {
-  uk: "Це питання поза підтримуваними темами Vulcan’s Mind. Я можу допомогти з: AI-автоматизацією, RAG/LLM, психометрикою/скринінгом, психічним здоров’ям під час війни, військовою медициною (на загальному рівні), нейромодуляцією, когнітивною продуктивністю, human–AI взаємодією, або контекстом проєктів Володимира.",
-  en: "This question is outside Vulcan's Mind supported domains. I can help with: AI automation, RAG/LLM, psychometrics/screening, wartime mental health, military medicine (at a general level), neuromodulation evidence, cognitive performance, human–AI interaction, or Volodymyr's project context.",
+  uk: "Це трохи поза моєю основною базою. Я найкраще працюю з темами AI-автоматизації, RAG/LLM, психометрики, цифрового скринінгу станів, охорони ментального здоров'я, військового контексту і проєктів Володимира. Можу або відповісти дуже загально, або допомогти переформулювати питання ближче до цих тем.",
+  en: "This is a bit outside my main domain. I work best with AI automation, RAG/LLM, psychometrics, digital screening, mental health, the military context of digital tools, and Volodymyr's projects. I can answer at a very general level, or help reframe the question closer to those topics.",
 };
 
 export function refusalFor(

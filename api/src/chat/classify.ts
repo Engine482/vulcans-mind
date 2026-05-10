@@ -83,8 +83,10 @@ const TOPIC_PATTERNS: Array<{ topic: ChatTopic; patterns: RegExp[] }> = [
     patterns: [
       /\b(vulcan'?s? mind|vulcan_mind|motornyi|lusterko|imenuy)\b/,
       /люстерк/,
-      /іменуй мене/,
-      /волод(имир|и)\s+мотор/,
+      /іменуй\s+мене/,
+      /волод(имир|и|імир)/,
+      /мотор(ний|ного|ним|ні)/,
+      /вулкан/,
       /vulcan/,
     ],
   },

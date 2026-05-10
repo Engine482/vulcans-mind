@@ -178,7 +178,7 @@ describe("POST /api/chat — happy path (mock mode)", () => {
       expect(res.statusCode).toBe(200);
       const body = res.json() as { meta: Record<string, unknown>; answer: string };
       expect(body.meta.topic).toBe("unsafe_medical");
-      expect(body.answer.toLowerCase()).toContain("can't provide a diagnosis");
+      expect(body.answer.toLowerCase()).toContain("can't assess an individual state");
       expect(called).toBe(false);
     } finally {
       await app.close();
