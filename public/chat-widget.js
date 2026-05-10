@@ -1,7 +1,7 @@
 /* Vulcan's Mind — chat widget
  *
  * Vanilla JS, no framework. Privacy contract:
- * - Messages live in memory only; cleared on page unload or via Clear button.
+ * - Messages live in memory only; cleared on page unload or via reset button.
  * - localStorage is never used.
  * - sessionStorage stores only an anonymous session id (`vm_sid`).
  * - The widget never logs message text or answer text to the console.
@@ -22,63 +22,100 @@
   );
 
   var MAX_MESSAGE = 1500;
+  var COUNTER_WARN_AT = 1200;
+  var SUGGESTED_VISIBLE = 3;
+  var TYPEWRITER_WORDS_PER_TICK_SHORT = 3;
+  var TYPEWRITER_WORDS_PER_TICK_LONG = 8;
+  var TYPEWRITER_INTERVAL_MS = 40;
+  var TYPEWRITER_MAX_DURATION_MS = 5000;
 
   var COPY = {
     uk: {
       title: "Vulcan's Mind",
       launcher: "Відкрити чат Vulcan's Mind",
       close: "Закрити чат",
-      clear: "Очистити чат",
+      reset: "Нова розмова",
       greeting:
-        "Вітаю. Я Vulcan's Mind — AI-бот у контексті роботи, досвіду та дослідницьких інтересів Володимира «Вулкана» Моторного. Спираюсь на обмежену базу публічних джерел.",
+        "Вітаю. Я Vulcan's Mind — AI-бот про роботу, проєкти, досвід і дослідницькі інтереси Володимира «Вулкана» Моторного. Можу пояснити ідеї «Люстерка», Vulcan's Mind, підходи до AI-автоматизації, психометрики, RAG/LLM, ментального здоров'я та human–AI взаємодії.",
       disclaimer:
-        "Не є медичним сервісом. Відповіді мають інформаційний характер і спираються на обмежену базу джерел. Не діагностую і не призначаю лікування.",
-      suggestedTitle: "Спробуйте запитати:",
+        "Не є медичним сервісом і не замінює професійну консультацію.",
       suggested: [
-        "Що таке Vulcan's Mind?",
+        "Що таке Vulcan's Mind і для чого він потрібен?",
+        "Над якими проєктами працює Вулкан?",
+        "Що таке «Люстерко» і яку проблему воно вирішує?",
+        "Як AI можна використати в охороні ментального здоров'я?",
         "Що таке RAG і чому він важливий для AI-ботів?",
-        "Як AI може допомогти у ментальному здоров'ї під час війни?",
-        "Що таке «Люстерко» як ідея цифрового скринінгу станів?",
-        "Які апаратні методики досліджують для ПТСР і депресії?",
-        "Чому військовий контекст змінює дизайн цифрових інструментів?",
+        "Як військовий контекст змінює дизайн цифрових інструментів?",
+        "Які підходи можуть допомагати з увагою, стресом і продуктивністю?",
+        "Чим Vulcan's Mind відрізняється від звичайного чат-бота?",
+        "Як AI може допомогти командиру краще бачити стан підрозділу?",
+        "Чому цифровий скринінг не має перетворюватися на автоматичну діагностику?",
+        "Як поєднати психометрику, когнітивні тести й AI без зайвого хайпу?",
+        "Що означає human–AI взаємодія в практичних продуктах?",
       ],
       placeholder: "Напишіть запитання…",
       send: "Надіслати",
-      sending: "Шукаю в базі джерел…",
-      sourcesLabel: "Джерела",
       errorRate: "Забагато запитів. Спробуйте трохи пізніше.",
       errorBad: "Не вдалося прийняти запит. Перевірте формулювання.",
-      errorNetwork: "Сервіс недоступний. Спробуйте пізніше.",
-      tooLong: "Максимум 1500 символів.",
+      errorNetwork:
+        "Не вдалося отримати відповідь. Спробуйте ще раз або переформулюй питання.",
+      tooLong: "Запит задовгий. Скороти його до 1500 символів.",
     },
     en: {
       title: "Vulcan's Mind",
       launcher: "Open Vulcan's Mind chat",
       close: "Close chat",
-      clear: "Clear chat",
+      reset: "New conversation",
       greeting:
-        "Hi. I'm Vulcan's Mind — an AI chatbot in the public context of Volodymyr \"Vulcan\" Motornyi's work, experience, and research interests. I draw on a limited curated source library.",
+        "Hi. I'm Vulcan's Mind — an AI chatbot about the work, projects, experience and research interests of Volodymyr \"Vulcan\" Motornyi. I can explain the ideas behind Lusterko, Vulcan's Mind, AI automation, psychometrics, RAG/LLM, mental health and human–AI interaction.",
       disclaimer:
-        "Not a medical service. Answers are informational and grounded in a limited library. I do not diagnose or prescribe treatment.",
-      suggestedTitle: "Try asking:",
+        "Not a medical service. Does not replace professional consultation.",
       suggested: [
-        "What is Vulcan's Mind?",
+        "What is Vulcan's Mind and what is it for?",
+        "What projects is Vulcan working on?",
+        "What is Lusterko and what problem does it solve?",
+        "How can AI be used in mental health support?",
         "What is RAG and why does it matter for AI chatbots?",
-        "How can AI help with wartime mental health?",
-        "What is Lusterko as a digital screening idea?",
-        "What device-based methods are studied for PTSD and depression?",
         "How does military context change the design of digital tools?",
+        "What approaches can help with attention, stress and productivity?",
+        "How does Vulcan's Mind differ from a generic chatbot?",
+        "How can AI help a commander see the state of a unit more clearly?",
+        "Why shouldn't digital screening turn into automatic diagnosis?",
+        "How to combine psychometrics, cognitive tests and AI without hype?",
+        "What does human–AI interaction mean in practical products?",
       ],
       placeholder: "Type a question…",
       send: "Send",
-      sending: "Searching the source library…",
-      sourcesLabel: "Sources",
       errorRate: "Too many requests. Please try again shortly.",
       errorBad: "Could not accept that request. Try rephrasing.",
-      errorNetwork: "Service unavailable. Please try again later.",
-      tooLong: "1500 character maximum.",
+      errorNetwork:
+        "Couldn't get a response. Try again or rephrase your question.",
+      tooLong: "Message is too long. Trim it to 1500 characters.",
     },
   };
+
+  // SVG icons. aria-hidden so screen readers fall back to the button label.
+  var ICON_ROTATE_CCW =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M3 12a9 9 0 1 0 3-6.7"/>' +
+    '<polyline points="3 4 3 10 9 10"/>' +
+    "</svg>";
+  var ICON_CLOSE =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<line x1="6" y1="6" x2="18" y2="18"/>' +
+    '<line x1="18" y1="6" x2="6" y2="18"/>' +
+    "</svg>";
+  var ICON_ARROW_UP =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<line x1="12" y1="19" x2="12" y2="5"/>' +
+    '<polyline points="5 12 12 5 19 12"/>' +
+    "</svg>";
+  var ICON_LAUNCHER =
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none" aria-hidden="true">' +
+    '<path d="M8 22c-2.5-3-2-7 1-9 1-3 4-5 7-4.5 3-2 7 0 8 3 3 0 5 3 4 6-1 3-3 4-5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="M11 28l3-6h8l3 6H11z" fill="currentColor"/>' +
+    '<path d="M17 22l1-4M19 22l-1-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>' +
+    "</svg>";
 
   function detectLang() {
     var c = (CONFIG.language || "auto").toLowerCase();
@@ -106,6 +143,16 @@
     } catch (_) {
       return undefined;
     }
+  }
+
+  function pickRandom(list, n) {
+    var copy = list.slice();
+    var out = [];
+    while (copy.length > 0 && out.length < n) {
+      var idx = Math.floor(Math.random() * copy.length);
+      out.push(copy.splice(idx, 1)[0]);
+    }
+    return out;
   }
 
   function el(tag, attrs, children) {
@@ -136,6 +183,8 @@
     var t = COPY[lang];
     var messages = []; // in memory only, never persisted
     var pending = false;
+    var hasUserSent = false;
+    var typewriterTimer = null;
 
     var root = el("div", { class: "vm-root", "data-lang": lang });
 
@@ -147,17 +196,9 @@
     });
 
     if (CONFIG.iconUrl) {
-      launcher.appendChild(
-        el("img", { src: CONFIG.iconUrl, alt: "" }),
-      );
+      launcher.appendChild(el("img", { src: CONFIG.iconUrl, alt: "" }));
     } else {
-      // Inline fallback glyph: simple brain-volcano abstraction.
-      launcher.innerHTML =
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none" aria-hidden="true">' +
-        '<path d="M8 22c-2.5-3-2-7 1-9 1-3 4-5 7-4.5 3-2 7 0 8 3 3 0 5 3 4 6-1 3-3 4-5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
-        '<path d="M11 28l3-6h8l3 6H11z" fill="currentColor"/>' +
-        '<path d="M17 22l1-4M19 22l-1-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>' +
-        "</svg>";
+      launcher.innerHTML = ICON_LAUNCHER;
     }
 
     var panel = el("div", {
@@ -169,26 +210,23 @@
     });
 
     var headerTitle = el("h2", { id: "vm-title", text: t.title });
-    var clearBtn = el("button", {
+    var resetBtn = el("button", {
       type: "button",
       class: "vm-icon-btn",
-      "aria-label": t.clear,
-      title: t.clear,
-      html:
-        '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
-        '<path d="M3 4h10M6 4V3a1 1 0 011-1h2a1 1 0 011 1v1M5 4l1 9a1 1 0 001 1h2a1 1 0 001-1l1-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-        "</svg>",
+      "aria-label": t.reset,
+      title: t.reset,
+      html: ICON_ROTATE_CCW,
     });
     var closeBtn = el("button", {
       type: "button",
       class: "vm-icon-btn",
       "aria-label": t.close,
       title: t.close,
-      text: "×",
+      html: ICON_CLOSE,
     });
     var header = el("header", { class: "vm-header" }, [
       headerTitle,
-      clearBtn,
+      resetBtn,
       closeBtn,
     ]);
 
@@ -198,29 +236,31 @@
       role: "note",
       text: t.disclaimer,
     });
-    var suggestedTitle = el("div", {
-      class: "vm-suggested-title vm-disclaimer",
-      text: t.suggestedTitle,
-    });
+
     var suggested = el("div", {
       class: "vm-suggested",
       role: "group",
-      "aria-label": t.suggestedTitle,
+      "aria-label": t.title,
     });
-    t.suggested.forEach(function (q) {
-      suggested.appendChild(
-        el("button", {
-          type: "button",
-          class: "vm-chip",
-          text: q,
-          onclick: function () {
-            textarea.value = q;
-            updateCounter();
-            send();
-          },
-        }),
-      );
-    });
+
+    function renderSuggested() {
+      while (suggested.firstChild) suggested.removeChild(suggested.firstChild);
+      var picks = pickRandom(t.suggested, SUGGESTED_VISIBLE);
+      picks.forEach(function (q) {
+        suggested.appendChild(
+          el("button", {
+            type: "button",
+            class: "vm-chip",
+            text: q,
+            onclick: function () {
+              textarea.value = q;
+              updateCounter();
+              send();
+            },
+          }),
+        );
+      });
+    }
 
     var messagesEl = el("div", {
       class: "vm-messages",
@@ -232,14 +272,13 @@
     var body = el("div", { class: "vm-body" }, [
       greeting,
       disclaimer,
-      suggestedTitle,
       suggested,
       messagesEl,
     ]);
 
     var textarea = el("textarea", {
       class: "vm-textarea",
-      rows: 2,
+      rows: 1,
       maxlength: String(MAX_MESSAGE),
       placeholder: t.placeholder,
       "aria-label": t.placeholder,
@@ -247,14 +286,16 @@
     var counter = el("div", {
       class: "vm-counter",
       "aria-live": "off",
-      text: "0/" + MAX_MESSAGE,
+      hidden: true,
     });
     var sendBtn = el("button", {
       type: "submit",
       class: "vm-send",
-      text: t.send,
+      "aria-label": t.send,
+      title: t.send,
+      html: ICON_ARROW_UP,
     });
-    var form = el("form", { class: "vm-input" }, [textarea, counter, sendBtn]);
+    var form = el("form", { class: "vm-input" }, [textarea, sendBtn, counter]);
 
     panel.appendChild(header);
     panel.appendChild(body);
@@ -264,68 +305,105 @@
     document.body.appendChild(root);
 
     function updateCounter() {
-      counter.textContent = textarea.value.length + "/" + MAX_MESSAGE;
+      var len = textarea.value.length;
+      if (len < COUNTER_WARN_AT) {
+        counter.hidden = true;
+        counter.classList.remove("is-error");
+        return;
+      }
+      counter.hidden = false;
+      counter.textContent = len + "/" + MAX_MESSAGE;
+      counter.classList.toggle("is-error", len > MAX_MESSAGE);
     }
 
-    function scrollMessages() {
-      body.scrollTop = body.scrollHeight;
+    function autoResizeTextarea() {
+      textarea.style.height = "auto";
+      var next = Math.min(textarea.scrollHeight, 140);
+      textarea.style.height = next + "px";
+    }
+
+    function isNearBottom() {
+      var threshold = 80;
+      return body.scrollTop + body.clientHeight >= body.scrollHeight - threshold;
+    }
+
+    function scrollToBottom(force) {
+      if (force || isNearBottom()) {
+        body.scrollTop = body.scrollHeight;
+      }
+    }
+
+    function hideSuggestedAfterFirstSend() {
+      if (!hasUserSent) {
+        hasUserSent = true;
+        suggested.hidden = true;
+      }
     }
 
     function renderUser(text) {
       var bubble = el("div", { class: "vm-bubble", text: text });
       var msg = el("div", { class: "vm-msg vm-msg-user" }, [bubble]);
       messagesEl.appendChild(msg);
-      scrollMessages();
+      scrollToBottom(true);
     }
 
-    function renderLoading() {
-      var bubble = el("div", {
-        class: "vm-bubble vm-bubble-loading",
-        text: t.sending,
-      });
-      var msg = el("div", { class: "vm-msg vm-msg-bot" }, [bubble]);
-      msg.dataset.role = "loading";
+    function renderTyping() {
+      var typing = el("div", { class: "vm-bubble vm-typing" }, [
+        el("span", { class: "vm-typing-dot" }),
+        el("span", { class: "vm-typing-dot" }),
+        el("span", { class: "vm-typing-dot" }),
+      ]);
+      var msg = el("div", { class: "vm-msg vm-msg-bot" }, [typing]);
+      msg.dataset.role = "typing";
       messagesEl.appendChild(msg);
-      scrollMessages();
+      scrollToBottom(true);
       return msg;
     }
 
-    function renderBotAnswer(answer, sources) {
-      var bubble = el("div", { class: "vm-bubble", text: answer });
-      var children = [bubble];
-      if (sources && sources.length) {
-        var label = el("div", { class: "vm-sources-label", text: t.sourcesLabel });
-        var list = el("div", { class: "vm-sources" }, [label]);
-        sources.forEach(function (s) {
-          var meta = [s.authors, s.year, s.sourceType]
-            .filter(Boolean)
-            .join(" · ");
-          var titleEl = el("div", { class: "vm-source-title", text: s.title });
-          var metaEl = meta
-            ? el("div", { class: "vm-source-meta", text: meta })
-            : null;
-          var node;
-          if (s.url) {
-            node = el(
-              "a",
-              {
-                class: "vm-source",
-                href: s.url,
-                target: "_blank",
-                rel: "noopener noreferrer",
-              },
-              [titleEl, metaEl],
-            );
-          } else {
-            node = el("div", { class: "vm-source" }, [titleEl, metaEl]);
-          }
-          list.appendChild(node);
-        });
-        children.push(list);
+    function stopTypewriter() {
+      if (typewriterTimer != null) {
+        clearInterval(typewriterTimer);
+        typewriterTimer = null;
       }
-      var msg = el("div", { class: "vm-msg vm-msg-bot" }, children);
+    }
+
+    function renderBotAnswer(answer) {
+      var bubble = el("div", { class: "vm-bubble", text: "" });
+      var msg = el("div", { class: "vm-msg vm-msg-bot" }, [bubble]);
       messagesEl.appendChild(msg);
-      scrollMessages();
+      scrollToBottom(false);
+      runTypewriter(bubble, answer);
+    }
+
+    function runTypewriter(target, answer) {
+      stopTypewriter();
+      var words = answer.split(/(\s+)/);
+      var idx = 0;
+      var chunkSize =
+        answer.length > 600
+          ? TYPEWRITER_WORDS_PER_TICK_LONG
+          : TYPEWRITER_WORDS_PER_TICK_SHORT;
+      var startedAt = Date.now();
+
+      function finishNow() {
+        target.textContent = answer;
+        stopTypewriter();
+        scrollToBottom(false);
+      }
+
+      typewriterTimer = setInterval(function () {
+        if (Date.now() - startedAt > TYPEWRITER_MAX_DURATION_MS) {
+          finishNow();
+          return;
+        }
+        idx += chunkSize * 2; // *2 because split keeps whitespace tokens
+        if (idx >= words.length) {
+          finishNow();
+          return;
+        }
+        target.textContent = words.slice(0, idx).join("");
+        scrollToBottom(false);
+      }, TYPEWRITER_INTERVAL_MS);
     }
 
     function renderError(text) {
@@ -336,19 +414,25 @@
       });
       var msg = el("div", { class: "vm-msg vm-msg-bot" }, [bubble]);
       messagesEl.appendChild(msg);
-      scrollMessages();
+      scrollToBottom(true);
     }
 
-    function clearChat() {
+    function resetChat() {
+      stopTypewriter();
       messages.length = 0;
       while (messagesEl.firstChild) messagesEl.removeChild(messagesEl.firstChild);
+      hasUserSent = false;
+      suggested.hidden = false;
+      renderSuggested();
+      textarea.value = "";
+      autoResizeTextarea();
+      updateCounter();
       textarea.focus();
     }
 
     function setPending(p) {
       pending = p;
-      sendBtn.disabled = p;
-      textarea.disabled = p;
+      sendBtn.disabled = p || textarea.value.trim().length === 0;
     }
 
     function openPanel() {
@@ -372,7 +456,7 @@
 
     launcher.addEventListener("click", togglePanel);
     closeBtn.addEventListener("click", closePanel);
-    clearBtn.addEventListener("click", clearChat);
+    resetBtn.addEventListener("click", resetChat);
 
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && !panel.hidden) {
@@ -381,7 +465,11 @@
       }
     });
 
-    textarea.addEventListener("input", updateCounter);
+    textarea.addEventListener("input", function () {
+      updateCounter();
+      autoResizeTextarea();
+      sendBtn.disabled = pending || textarea.value.trim().length === 0;
+    });
     textarea.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -401,20 +489,24 @@
         renderError(t.tooLong);
         return;
       }
+      hideSuggestedAfterFirstSend();
       messages.push({ role: "user", text: raw });
       renderUser(raw);
       textarea.value = "";
+      autoResizeTextarea();
       updateCounter();
-      var loadingNode = renderLoading();
+      var typingNode = renderTyping();
       setPending(true);
 
       try {
         var data = await callApi(raw);
-        loadingNode.remove();
-        messages.push({ role: "bot", text: data.answer });
-        renderBotAnswer(data.answer, data.sources || []);
+        typingNode.remove();
+        var answer = (data && data.answer) || "";
+        messages.push({ role: "bot", text: answer });
+        renderBotAnswer(answer);
       } catch (err) {
-        loadingNode.remove();
+        typingNode.remove();
+        stopTypewriter();
         var msg;
         if (err && err.status === 429) msg = t.errorRate;
         else if (err && err.status === 400) msg = t.errorBad;
@@ -449,12 +541,15 @@
       });
     }
 
+    renderSuggested();
     updateCounter();
+    autoResizeTextarea();
+    setPending(false);
 
     return {
       open: openPanel,
       close: closePanel,
-      clear: clearChat,
+      reset: resetChat,
       element: root,
     };
   }

@@ -2,22 +2,22 @@
  * collisions when embedded into motornyi.com. */
 
 .vm-root {
-  --vm-button-bg: #d8612c;
-  --vm-button-fg: #fff7ed;
-  --vm-button-accent: #facc15;
-  --vm-launcher-bg: #1f1b16;
-  --vm-launcher-ring: rgba(216, 97, 44, 0.35);
-  --vm-panel-bg: #fbf6ef;
-  --vm-panel-fg: #1f1b16;
-  --vm-panel-border: #e7d9c6;
-  --vm-muted: #6b6357;
-  --vm-link: #b04a1c;
-  --vm-bubble-user: #fff;
-  --vm-bubble-bot: #f1ead8;
-  --vm-source-bg: #fff;
-  --vm-error: #b3261e;
-  --vm-radius: 12px;
-  --vm-shadow: 0 8px 24px rgba(40, 26, 14, 0.18);
+  --vm-bg: #0f1115;
+  --vm-surface: #171a20;
+  --vm-surface-elevated: #20242c;
+  --vm-border: #30343d;
+  --vm-border-strong: #3a3f4a;
+  --vm-text: #f2f3f5;
+  --vm-text-muted: #a7abb4;
+  --vm-user-bubble: #2f3440;
+  --vm-assistant-bubble: #1b1f27;
+  --vm-accent: #d8662a;
+  --vm-accent-hover: #e27638;
+  --vm-accent-ring: rgba(216, 102, 42, 0.4);
+  --vm-danger: #ef4444;
+  --vm-radius: 14px;
+  --vm-radius-bubble: 16px;
+  --vm-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
   --vm-z: 2147483640;
   position: fixed;
   inset: 0;
@@ -25,7 +25,7 @@
   z-index: var(--vm-z);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
-  color: var(--vm-panel-fg);
+  color: var(--vm-text);
 }
 
 .vm-root *,
@@ -38,33 +38,36 @@
   position: fixed;
   right: 24px;
   bottom: 24px;
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
   padding: 0;
-  border: 2px solid var(--vm-launcher-ring);
+  border: 1px solid var(--vm-border-strong);
   border-radius: 50%;
-  background: var(--vm-launcher-bg);
-  color: var(--vm-button-fg);
+  background: var(--vm-surface-elevated);
+  color: var(--vm-accent);
   cursor: pointer;
   pointer-events: auto;
   box-shadow: var(--vm-shadow);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 160ms ease, box-shadow 160ms ease;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
   -webkit-tap-highlight-color: transparent;
 }
 
-.vm-launcher:hover { transform: translateY(-1px); }
+.vm-launcher:hover {
+  transform: translateY(-1px);
+  border-color: var(--vm-accent);
+}
 .vm-launcher:focus-visible {
-  outline: 3px solid var(--vm-button-accent);
+  outline: 2px solid var(--vm-accent);
   outline-offset: 3px;
 }
 
 .vm-launcher svg,
 .vm-launcher img {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   pointer-events: none;
   display: block;
 }
@@ -76,8 +79,8 @@
   width: min(420px, calc(100vw - 24px));
   height: min(640px, calc(100dvh - 120px));
   max-height: calc(100dvh - 48px);
-  background: var(--vm-panel-bg);
-  border: 1px solid var(--vm-panel-border);
+  background: var(--vm-bg);
+  border: 1px solid var(--vm-border);
   border-radius: var(--vm-radius);
   box-shadow: var(--vm-shadow);
   display: flex;
@@ -86,23 +89,32 @@
   overflow: hidden;
 }
 
+@supports not (height: 100dvh) {
+  .vm-panel {
+    height: min(640px, calc(100vh - 120px));
+    max-height: calc(100vh - 48px);
+  }
+}
+
 .vm-panel[hidden] { display: none; }
 
 .vm-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding: 10px 12px;
-  border-bottom: 1px solid var(--vm-panel-border);
-  background: #f3ead7;
+  border-bottom: 1px solid var(--vm-border);
+  background: var(--vm-surface);
+  flex: 0 0 auto;
 }
 
 .vm-header h2 {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   flex: 1 1 auto;
   letter-spacing: 0.01em;
+  color: var(--vm-text);
 }
 
 .vm-icon-btn {
@@ -111,67 +123,85 @@
   border-radius: 8px;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--vm-panel-fg);
+  color: var(--vm-text-muted);
   cursor: pointer;
-  font-size: 18px;
-  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  transition: color 120ms ease, background 120ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.vm-icon-btn:hover { background: rgba(0, 0, 0, 0.05); }
+.vm-icon-btn svg { display: block; }
+
+.vm-icon-btn:hover {
+  background: var(--vm-surface-elevated);
+  color: var(--vm-text);
+}
 .vm-icon-btn:focus-visible {
-  outline: 2px solid var(--vm-button-bg);
+  outline: 2px solid var(--vm-accent);
   outline-offset: 1px;
 }
 
 .vm-body {
   flex: 1 1 auto;
   overflow-y: auto;
-  padding: 12px;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 16px 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  scroll-behavior: smooth;
+  gap: 14px;
 }
 
 .vm-greeting {
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1.5;
+  color: var(--vm-text);
 }
 
 .vm-disclaimer {
   font-size: 12px;
-  color: var(--vm-muted);
+  color: var(--vm-text-muted);
   line-height: 1.4;
-  border-left: 3px solid var(--vm-panel-border);
-  padding: 4px 0 4px 8px;
+}
+
+.vm-suggested-title {
+  font-size: 12px;
+  color: var(--vm-text-muted);
+  margin-top: 2px;
 }
 
 .vm-suggested {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
-  margin-top: 4px;
 }
+
+.vm-suggested[hidden] { display: none; }
 
 .vm-chip {
   font: inherit;
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--vm-panel-border);
-  background: #fff;
-  color: var(--vm-panel-fg);
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--vm-border);
+  background: var(--vm-surface);
+  color: var(--vm-text);
   cursor: pointer;
   text-align: left;
-  line-height: 1.3;
+  transition: border-color 120ms ease, background 120ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.vm-chip:hover { border-color: var(--vm-button-bg); }
+.vm-chip:hover {
+  border-color: var(--vm-accent);
+  background: var(--vm-surface-elevated);
+}
 .vm-chip:focus-visible {
-  outline: 2px solid var(--vm-button-bg);
+  outline: 2px solid var(--vm-accent);
   outline-offset: 1px;
 }
 
@@ -179,142 +209,164 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 4px;
 }
 
 .vm-msg {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.55;
 }
 
-.vm-msg-user .vm-bubble {
-  align-self: flex-end;
-  background: var(--vm-bubble-user);
-  border: 1px solid var(--vm-panel-border);
+.vm-msg-user {
+  align-items: flex-end;
 }
-
-.vm-msg-bot .vm-bubble {
-  align-self: flex-start;
-  background: var(--vm-bubble-bot);
+.vm-msg-bot {
+  align-items: flex-start;
 }
 
 .vm-bubble {
-  max-width: 88%;
-  padding: 10px 12px;
-  border-radius: 12px;
+  max-width: 92%;
+  padding: 10px 14px;
+  border-radius: var(--vm-radius-bubble);
   white-space: pre-wrap;
   word-wrap: break-word;
+  color: var(--vm-text);
 }
 
-.vm-bubble-loading {
-  font-style: italic;
-  color: var(--vm-muted);
+.vm-msg-user .vm-bubble {
+  background: var(--vm-user-bubble);
+  border-bottom-right-radius: 6px;
+}
+
+.vm-msg-bot .vm-bubble {
+  background: var(--vm-assistant-bubble);
+  border: 1px solid var(--vm-border);
+  border-bottom-left-radius: 6px;
 }
 
 .vm-bubble-error {
-  background: #fef2f2;
-  border: 1px solid #f5c2c2;
-  color: var(--vm-error);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
 }
 
-.vm-sources {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 4px;
+.vm-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 16px;
 }
 
-.vm-sources-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--vm-muted);
+.vm-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vm-text-muted);
+  opacity: 0.5;
+  animation: vm-typing-bounce 1.2s infinite ease-in-out both;
 }
 
-.vm-source {
-  display: block;
-  background: var(--vm-source-bg);
-  border: 1px solid var(--vm-panel-border);
-  border-radius: 8px;
-  padding: 8px 10px;
-  text-decoration: none;
-  color: inherit;
-  font-size: 12px;
-  line-height: 1.35;
-}
+.vm-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.vm-typing-dot:nth-child(3) { animation-delay: 0.3s; }
 
-.vm-source:hover { border-color: var(--vm-button-bg); }
-.vm-source:focus-visible {
-  outline: 2px solid var(--vm-button-bg);
-  outline-offset: 1px;
+@keyframes vm-typing-bounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  40% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
 }
-
-.vm-source-title { font-weight: 600; }
-.vm-source-meta { color: var(--vm-muted); }
 
 .vm-input {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: flex-end;
-  padding: 10px;
-  border-top: 1px solid var(--vm-panel-border);
-  background: var(--vm-panel-bg);
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--vm-border);
+  background: var(--vm-surface);
+  flex: 0 0 auto;
+  position: relative;
 }
 
 .vm-textarea {
   flex: 1 1 auto;
   font: inherit;
-  font-size: 14px;
+  /* 16px is the minimum that prevents iOS Safari from zooming on focus. */
+  font-size: 16px;
   line-height: 1.4;
   resize: none;
   min-height: 40px;
   max-height: 140px;
-  padding: 8px 10px;
-  border: 1px solid var(--vm-panel-border);
-  border-radius: 8px;
-  background: #fff;
-  color: var(--vm-panel-fg);
+  padding: 10px 12px;
+  border: 1px solid var(--vm-border);
+  border-radius: 12px;
+  background: var(--vm-bg);
+  color: var(--vm-text);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 
-.vm-textarea:focus-visible {
-  outline: 2px solid var(--vm-button-bg);
-  outline-offset: 0;
+.vm-textarea::placeholder {
+  color: var(--vm-text-muted);
+}
+
+.vm-textarea:focus {
+  outline: none;
+  border-color: var(--vm-accent);
+  box-shadow: 0 0 0 3px var(--vm-accent-ring);
 }
 
 .vm-send {
   font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 10px 14px;
-  border-radius: 8px;
+  font-size: 14px;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   border: none;
-  background: var(--vm-button-bg);
-  color: var(--vm-button-fg);
+  background: var(--vm-accent);
+  color: #fff;
   cursor: pointer;
-  min-height: 44px;
-  min-width: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  transition: background 120ms ease, transform 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vm-send:hover:not(:disabled) {
+  background: var(--vm-accent-hover);
 }
 
 .vm-send:disabled {
-  opacity: 0.5;
+  background: var(--vm-surface-elevated);
+  color: var(--vm-text-muted);
   cursor: not-allowed;
 }
 
 .vm-send:focus-visible {
-  outline: 2px solid var(--vm-button-accent);
+  outline: 2px solid var(--vm-accent);
   outline-offset: 2px;
 }
 
+.vm-send svg { display: block; }
+
 .vm-counter {
+  position: absolute;
+  right: 60px;
+  bottom: calc(14px + env(safe-area-inset-bottom));
   font-size: 11px;
-  color: var(--vm-muted);
-  align-self: center;
-  white-space: nowrap;
-  padding: 0 4px;
+  color: var(--vm-text-muted);
+  pointer-events: none;
 }
+
+.vm-counter[hidden] { display: none; }
+.vm-counter.is-error { color: var(--vm-danger); }
 
 @media (max-width: 640px) {
   .vm-launcher {
@@ -325,8 +377,8 @@
   }
   .vm-launcher svg,
   .vm-launcher img {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
   }
   .vm-panel {
     right: 0;
@@ -334,33 +386,30 @@
     top: auto;
     bottom: 0;
     width: 100vw;
-    height: calc(100dvh - max(env(safe-area-inset-top, 0px), 24px));
-    max-height: calc(100dvh - max(env(safe-area-inset-top, 0px), 24px));
+    height: 100dvh;
+    max-height: 100dvh;
     border-radius: 16px 16px 0 0;
     border-left: none;
     border-right: none;
     border-bottom: none;
   }
-  .vm-input {
-    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  @supports not (height: 100dvh) {
+    .vm-panel {
+      height: 100vh;
+      max-height: 100vh;
+    }
   }
   .vm-icon-btn {
     width: 40px;
     height: 40px;
   }
-  .vm-header {
-    padding: 8px 10px 8px 14px;
-  }
-  .vm-chip {
-    font-size: 13px;
-    padding: 8px 12px;
-  }
   .vm-bubble {
-    max-width: 92%;
+    max-width: 94%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .vm-launcher,
   .vm-body { transition: none; scroll-behavior: auto; }
+  .vm-typing-dot { animation: none; opacity: 0.7; }
 }
