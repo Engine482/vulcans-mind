@@ -5,6 +5,8 @@
   --vm-button-bg: #d8612c;
   --vm-button-fg: #fff7ed;
   --vm-button-accent: #facc15;
+  --vm-launcher-bg: #1f1b16;
+  --vm-launcher-ring: rgba(216, 97, 44, 0.35);
   --vm-panel-bg: #fbf6ef;
   --vm-panel-fg: #1f1b16;
   --vm-panel-border: #e7d9c6;
@@ -39,9 +41,9 @@
   width: 64px;
   height: 64px;
   padding: 0;
-  border: none;
+  border: 2px solid var(--vm-launcher-ring);
   border-radius: 50%;
-  background: var(--vm-button-bg);
+  background: var(--vm-launcher-bg);
   color: var(--vm-button-fg);
   cursor: pointer;
   pointer-events: auto;
@@ -50,6 +52,7 @@
   align-items: center;
   justify-content: center;
   transition: transform 160ms ease, box-shadow 160ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .vm-launcher:hover { transform: translateY(-1px); }
@@ -60,9 +63,10 @@
 
 .vm-launcher svg,
 .vm-launcher img {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   pointer-events: none;
+  display: block;
 }
 
 .vm-panel {
@@ -70,8 +74,8 @@
   right: 24px;
   bottom: 100px;
   width: min(420px, calc(100vw - 24px));
-  height: min(640px, calc(100vh - 120px));
-  max-height: calc(100vh - 48px);
+  height: min(640px, calc(100dvh - 120px));
+  max-height: calc(100dvh - 48px);
   background: var(--vm-panel-bg);
   border: 1px solid var(--vm-panel-border);
   border-radius: var(--vm-radius);
@@ -319,19 +323,40 @@
     width: 56px;
     height: 56px;
   }
+  .vm-launcher svg,
+  .vm-launcher img {
+    width: 36px;
+    height: 36px;
+  }
   .vm-panel {
     right: 0;
     left: 0;
-    bottom: 0;
     top: auto;
+    bottom: 0;
     width: 100vw;
-    height: 90vh;
-    max-height: calc(100vh - env(safe-area-inset-top, 0px));
+    height: calc(100dvh - max(env(safe-area-inset-top, 0px), 24px));
+    max-height: calc(100dvh - max(env(safe-area-inset-top, 0px), 24px));
     border-radius: 16px 16px 0 0;
     border-left: none;
     border-right: none;
     border-bottom: none;
-    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .vm-input {
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  .vm-icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+  .vm-header {
+    padding: 8px 10px 8px 14px;
+  }
+  .vm-chip {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  .vm-bubble {
+    max-width: 92%;
   }
 }
 
